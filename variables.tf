@@ -1,11 +1,11 @@
 variable "aws_region" {
   description = "The AWS region to create things in."
-  default     = "us-east-1b"
+  default     = "us-east-1"
 }
 
 variable "key_name" {
   description = " SSH keys to connect to ec2 instance"
-  default     =  "my-d"
+  default     =  "anil01"
 }
 
 variable "instance_type" {
@@ -13,10 +13,6 @@ variable "instance_type" {
   default     =  "t2.micro"
 }
 
-variable "security_group" {
-  description = "Name of security group"
-  default     = "webSG"
-}
 
 variable "tag_name" {
   description = "Tag Name of for Ec2 instance"
