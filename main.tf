@@ -3,34 +3,29 @@ provider "aws" {
 }
 
 #Create security group with firewall rules
-resource "aws_security_group" "my_security_group" {
-  name        = var.security_group
-  description = "security group for Ec2 instance"
+resource "aws_security_group" "webSG1" {
+  name        = "webSG1"
+  description = "Allow ssh  inbound traffic"
 
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 3389
+    to_port     = 3389
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
- ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
- # outbound from jenkis server
-  egress {
+  ingress {
     from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags= {
-    Name = var.security_group
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 }
 
@@ -39,16 +34,16 @@ resource "aws_instance" "myFirstInstance" {
   ami           = var.ami_id
   key_name = var.key_name
   instance_type = var.instance_type
-  security_groups= [var.security_group]
-  tags= {
-    Name = var.tag_name
+   vpc_security_group_ids = ["${aws_security_group.webSG1.id}"]
+  tags = {
+    Name = "Window_VPN"
   }
 }
 
 # Create Elastic IP address
 resource "aws_eip" "myFirstInstance" {
-  vpc      = true
-  instance = aws_instance.myFirstInstance.id
+ domain   = "vpc"
+ instance = aws_instance.myFirstInstance.id
 tags= {
     Name = "my_elastic_ip"
   }
